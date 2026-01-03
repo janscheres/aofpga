@@ -8,26 +8,27 @@ let () =
   
   let i = {
     Dial.I.
-    clock     = Cyclesim.in_port sim "clock";
-    clear     = Cyclesim.in_port sim "clear";
-    start     = Cyclesim.in_port sim "start";
+    clock = Cyclesim.in_port sim "clock";
+    clear = Cyclesim.in_port sim "clear";
+    start = Cyclesim.in_port sim "start";
     direction = Cyclesim.in_port sim "direction";
-    amount    = Cyclesim.in_port sim "amount";
+    amount = Cyclesim.in_port sim "amount";
   } in
   let o = {
     Dial.O.
-    current   = Cyclesim.out_port sim "current";
-    password  = Cyclesim.out_port sim "password";
-    ready     = Cyclesim.out_port sim "ready";
+    current = Cyclesim.out_port sim "current";
+    password = Cyclesim.out_port sim "password";
+    part2 = Cyclesim.out_port sim "part2";
+    ready = Cyclesim.out_port sim "ready";
   } in
 
   let move dir_str amt =
     (* Convert "L"/"R" string to 0 or 1 *)
     let dir_bit = if String.equal dir_str "R" then 1 else 0 in
     
-    i.start     := Bits.one 1;
+    i.start := Bits.one 1;
     i.direction := Bits.of_int ~width:1 dir_bit;
-    i.amount    := Bits.of_int ~width:16 amt;
+    i.amount := Bits.of_int ~width:16 amt;
     
     Cyclesim.cycle sim;
     i.start := Bits.zero 1;
@@ -38,8 +39,6 @@ let () =
     Cyclesim.cycle sim
   in
 
-  (* --- MAIN LOGIC --- *)
-  
   (* 1. Reset *)
   i.clear := Bits.one 1;
   Cyclesim.cycle sim;
@@ -68,4 +67,4 @@ let () =
     
     (* 3. Print the Answer! *)
     Printf.printf "--- SOLVED ---\n";
-    Printf.printf "Final Password: %d\n" (Bits.to_int !(o.password))
+    Printf.printf "Part 1: %d\n" (Bits.to_int !(o.password))
