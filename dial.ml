@@ -16,6 +16,7 @@ module O = struct
     type 'a t = {
         current : 'a[@bits 8]; (*generic of length 8 bits*)
         password : 'a[@bits 16];
+        part2 : 'a[@bits 16];
         ready : 'a;
     }
     [@@deriving sexp_of, hardcaml]
@@ -67,15 +68,22 @@ let create (_scope : Scope.t) (i : Signal.t I.t) =
     current_pos <== reg spec_pos next_pos;
 
     let score = wire 16 in
+    let part2score = wire 16 in
 
     let just_zero_now = (left ==:. 1) &: (next_pos==:. 0) in
 
+    (* part 2*)
+    let part2_condition = is_moving &: (next_pos==:. 0) in
+
     let next_score = mux2 just_zero_now (score+:.1) score in
+    let next_score_part2 = mux2 part2_condition (score+:.1) score in
 
     score <== reg spec next_score;
+    part2score <== reg spec next_score_part2
 
     {O.
         current = current_pos; (*wire carrying 8 bits 0-255, rn is 50*)
         password = score; (*16 bit wire connected to ground*)
+        part2 = part2score;
         ready = ~: is_moving; (*only ready if we have 0 left to do*)
     }
