@@ -76,10 +76,10 @@ let create (_scope : Scope.t) (i : Signal.t I.t) =
     let part2_condition = is_moving &: (next_pos==:. 0) in
 
     let next_score = mux2 just_zero_now (score+:.1) score in
-    let next_score_part2 = mux2 part2_condition (score+:.1) score in
+    let next_score_part2 = mux2 part2_condition (part2score+:.1) part2score in
 
     score <== reg spec next_score;
-    part2score <== reg spec next_score_part2
+    part2score <== reg spec next_score_part2;
 
     {O.
         current = current_pos; (*wire carrying 8 bits 0-255, rn is 50*)
