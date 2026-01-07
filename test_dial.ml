@@ -21,7 +21,7 @@ let () =
     ready = Cyclesim.out_port sim "ready";
   } in
 
-  let move dir_str amt =
+  let move dir_str amt = (*function to move to the dir indicated in dir_str by amount amt*)
     (* turn L/R to 0 or 1 *)
     let dir_bit = if String.equal dir_str "R" then 1 else 0 in
     
